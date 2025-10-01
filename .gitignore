@@ -201,3 +201,7 @@ backup/
 .env.override
 config.local.py
 local_settings.py
+
+#cache files
+search_cache.txt
+user_modes.txt
