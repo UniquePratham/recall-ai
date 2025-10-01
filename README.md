@@ -1,117 +1,263 @@
-# Recall AI
+# Recal## ✨ Features
 
-Recall AI is an intelligent bot that serves as the brain you've always wanted. It remembers everything for you and recalls information effortlessly when needed.
+### 📄 **Advanced Document Processing**
+- **PDF Files**: Extract text from regular and scanned PDFs with OCR support
+- **Microsoft Office**: DOCX and PowerPoint (PPT/PPTX) with slide extraction
+- **Web Content**: HTML files with clean text extraction and metadata
+- **Text Formats**: Plain text (.txt) and Markdown (.md) files
+- **Smart Limits**: Automatic page/word count validation (30 pages for PDFs, 50 slides for PowerPoint)
 
-## Table of Contents
+### 🌐 **Enhanced URL Processing**
+- **Smart Web Scraping**: Extract content from websites with bot protection handling
+- **Auto-Categorization**: Intelligent website classification (AI tools, sports, etc.)
+- **Error Resilience**: Graceful handling of 404s, timeouts, and access restrictions
+- **Metadata Extraction**: Title, content, and context preservation
 
-- [Overview](#overview)
-- [Features](#features)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-- [Usage](#usage)
-- [Project Structure](#project-structure)
-- [Contributing](#contributing)
-- [License](#license)
+### 🖼️ **Image Analysis**
+- **OCR Technology**: Extract text from images and scanned documents
+- **Visual Analysis**: AI-powered image understanding and description
+- **Multiple Formats**: Support for common image formats
 
-## Overview
+### 🎵 **Audio Processing**
+- **Speech Recognition**: Convert MP3, WAV, OGG to text
+- **Smart Transcription**: Handle various audio qualities and accents
+- **Format Conversion**: Automatic audio format handling
 
-Recall AI is a Telegram bot that uses advanced AI techniques to process and store various types of information, including text, documents, images, and audio. It can then recall this information on demand, acting as an extended memory for users.
+### 🧠 **Intelligent Memory System**
+- **LRU Cache**: Lightning-fast search with least-recently-used caching
+- **Vector Search**: Advanced semantic search with Qdrant database
+- **Cache-First Logic**: Instant results from recent queries
+- **Smart Thresholds**: Optimized similarity scoring for better results
 
-## Features
+### 🔍 **Advanced Search & Memory Management**
+- **Natural Language Queries**: Ask questions in plain English
+- **Context-Aware Search**: Find related content across all stored materials
+- **Memory Commands**: `/forget` and `/forgetall` for selective memory management
+- **Preview Mode**: See what will be deleted before confirming
+- **Batch Operations**: Efficient bulk memory operations
 
-- Process and remember text messages
-- Extract information from documents (PDF, DOCX)
-- Analyze images and extract text
-- Transcribe and remember audio content
-- Extract and summarize content from URLs
-- Answer questions based on stored information
-- User activation system with license keys
+### 🔧 **Smart Content Recognition**
+- **Auto-Detection**: Automatically detect questions vs. storage requests
+- **List Queries**: Special handling for "list all" type queries
+- **Content Categorization**: Smart tagging and organization
+- **Metadata Preservation**: Store file types, sizes, and processing details
 
-## Getting Started
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+
+Recall AI is an intelligent Telegram bot that serves as your external brain, remembering everything for you and providing instant recall when needed. Built with advanced AI and vector search technology.
+
+## ✨ Features
+
+- � **Document Processing**: PDF, DOCX files
+- 🖼️ **Image Analysis**: OCR and visual analysis  
+- 🎵 **Audio Transcription**: MP3, WAV, OGG files
+- 📝 **Text Storage**: Direct text and URL content
+- 🔍 **Intelligent Search**: Ask questions about stored content
+
+## 🚀 Quick Start
 
 ### Prerequisites
-
-Before you begin, ensure you have the following installed:
-- Python 3.8+
-- pip (Python package manager)
+- Python 3.11+
 - MongoDB
 - Qdrant vector database
-
-You'll also need to obtain the following:
-- OpenAI API key
 - Telegram Bot Token
+- OpenAI API Key
 
 ### Installation
 
-1. Clone the repository:
-   ```
-   git clone https://github.com/yourusername/recall-ai.git
-   cd recall-ai
-   ```
+**⚠️ Use Virtual Environment to avoid dependency conflicts**
 
-2. Create and activate a virtual environment:
-   ```
-   python -m venv venv
-   source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
-   ```
+```bash
+git clone https://github.com/UniquePratham/recall-ai.git
+cd recall-ai
+python -m venv venv
 
-3. Install dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
+# Activate virtual environment
+.\venv\Scripts\Activate.ps1    # Windows PowerShell
+# venv\Scripts\activate.bat    # Windows CMD  
+# source venv/bin/activate     # Linux/Mac
 
-4. Set up environment variables:
-   Create a `.env` file in the project root and add the following:
-   ```
-   BOT_TOKEN=your_telegram_bot_token
-   MONGODB_URI=your_mongodb_uri
-   DB_NAME=your_database_name
-   OPENAI_API_KEY=your_openai_api_key
-   QDRANT_URL=your_qdrant_url
-   QDRANT_API_KEY=your_qdrant_api_key
-   ```
-
-5. Create MongoDB collections:
-   ```
-   python create_collections.py
-   ```
-
-6. Generate license keys (optional):
-   ```
-   python admin_tools.py
-   ```
-   Choose option 1 to generate license keys.
-
-## Usage
-
-1. Start the bot:
-   ```
+pip install -r requirements.txt
+cp .env.example .env           # Edit with your credentials
+python create_collections.py  # Initialize database
+python main.py                 # Start the bot
+```
+   ```bash
    python main.py
    ```
 
-2. In Telegram, start a chat with your bot and use the following commands:
-   - `/start`: Initialize the bot
-   - `/help`: Get information about available commands
-   - `/activate <LICENSE_KEY>`: Activate your account
-   - `/ask <QUESTION>`: Ask a question based on stored information
+### 🚀 Railway Cloud Deployment (24/7 Operation)
 
-Send text messages, documents, images, or audio files to the bot, and it will process and store the information for later recall.
+Deploy to Railway for always-on cloud hosting:
 
-## Project Structure
+```bash
+# 1. Push to GitHub
+git add . && git commit -m "Deploy to Railway" && git push
 
-- `main.py`: Entry point of the application
-- `handlers.py`: Telegram bot command and message handlers
-- `processors.py`: Functions to process different types of input (text, documents, images, audio)
-- `utils.py`: Utility functions for AI processing and database operations
-- `database.py`: Database-related functions
-- `admin_tools.py`: Admin tools for managing license keys
-- `create_collections.py`: Script to set up MongoDB collections
+# 2. Deploy on Railway
+# - Go to railway.app
+# - Connect GitHub repo
+# - Add environment variables
+# - Auto-deploy with Dockerfile
+```
 
-## Contributing
+**Railway Environment Variables**:
+```env
+BOT_TOKEN=your_telegram_bot_token
+AI_PROVIDER=Gemini
+GEMINI_API_KEY=your_gemini_api_key
+QDRANT_URL=https://your-cluster.qdrant.tech:6333
+QDRANT_API_KEY=your_qdrant_api_key
+MONGODB_URI=your_mongodb_atlas_uri
+SECRET_KEY=your_secret_key
+```
 
-We welcome contributions to Recall AI! Please see our [Contributing Guidelines](CONTRIBUTING.md) for more information on how to get started.
+**Cost**: $0-5/month (Railway free tier + Qdrant free tier)
 
-## License
+### Docker Deployment (Local)
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+```bash
+cp .env.example .env  # Edit with your credentials
+docker-compose up -d
+```
+
+## 📖 Usage
+
+### Commands
+- `/start` - Initialize the bot and get welcome message
+- `/help` - Show comprehensive help information  
+- `/ask <question>` - Query your stored content with natural language
+- `/forget` - Remove specific memories with preview and confirmation
+- `/forgetall` - Clear all stored memories with safety confirmation
+- `/activate <license_key>` - Activate with license key (if required)
+
+### Content Processing
+1. **Documents**: Send PDF, DOCX, PPT/PPTX files for automatic text extraction
+2. **Web Content**: Send URLs or HTML files for content extraction and storage
+3. **Text Files**: Send .txt or .md files for direct storage
+4. **Images**: Send photos for OCR text extraction and visual analysis
+5. **Audio**: Send voice messages or audio files for speech-to-text conversion
+6. **Direct Text**: Type messages for immediate storage and indexing
+
+### Smart Search Capabilities
+- **Question Detection**: Automatically recognizes when you're asking vs. storing
+- **List Queries**: Use "list all my..." to get comprehensive overviews
+- **Semantic Search**: Find content by meaning, not just keywords
+- **Cached Results**: Instant responses for recently searched queries
+- **Cross-Content Search**: Find information across all your stored materials
+
+## ⚙️ Configuration
+
+### Multi-Provider AI Support
+
+Recall AI supports multiple AI providers:
+- **OpenAI** (GPT-4, GPT-3.5, embeddings)
+- **Google Gemini** (gemini-1.5-flash, text-embedding-004)
+- **Anthropic Claude** (claude-3-haiku, claude-3-sonnet)
+- **GitHub Models** (Azure-hosted models)
+- **Custom** (Your own API endpoint)
+
+### Qdrant Cloud Configuration
+
+Use Qdrant Cloud (free 1GB tier) for managed vector database:
+1. Sign up at [cloud.qdrant.io](https://cloud.qdrant.io)
+2. Create free cluster (no credit card required)
+3. Copy cluster URL and API key
+
+### Environment Setup
+
+Create `.env` file:
+```env
+# Telegram Bot
+BOT_TOKEN=your_telegram_bot_token
+
+# Database
+MONGODB_URI=mongodb://localhost:27017
+DB_NAME=recall_ai
+
+# AI Provider (OpenAI | Gemini | Claude | GitHub | Custom)
+AI_PROVIDER=Gemini
+AI_MODEL=gemini-1.5-flash
+EMBEDDING_MODEL=text-embedding-004
+
+# API Keys (use only the one for your provider)
+GEMINI_API_KEY=your_gemini_api_key
+OPENAI_API_KEY=your_openai_api_key
+CLAUDE_API_KEY=your_claude_api_key
+GITHUB_TOKEN=your_github_token
+
+# Qdrant Cloud
+QDRANT_URL=https://your-cluster-url.qdrant.tech:6333
+QDRANT_API_KEY=your_qdrant_cloud_api_key
+QDRANT_COLLECTION_NAME=recall_documents
+
+# Security
+SECRET_KEY=your_secret_key
+```
+
+## 🏗️ Project Structure
+
+```
+recall-ai/
+├── main.py              # Application entry point
+├── config.py            # Configuration management
+├── handlers.py          # Telegram bot handlers and commands
+├── processors.py        # Multi-format content processing
+├── utils.py             # AI operations and enhanced search
+├── database.py          # Database operations and management
+├── cache_manager.py     # LRU cache and memory management
+├── validators.py        # Input validation and security
+├── exceptions.py        # Custom exception handling
+├── logging_config.py    # Comprehensive logging setup
+├── admin_tools.py       # Administration utilities
+├── create_collections.py # Database initialization
+├── requirements.txt     # Python dependencies
+├── Dockerfile          # Production container definition
+├── docker-compose.yml  # Multi-service development setup
+├── railway.json        # Railway deployment configuration
+└── .env.example        # Environment template with all options
+```
+
+## 🐳 Docker Support
+
+The project includes comprehensive Docker support with optimized configurations:
+- **Dockerfile**: Production-ready container with security best practices
+- **docker-compose.yml**: Complete development environment with MongoDB and Qdrant
+- **Multi-stage builds**: Optimized image sizes and build caching
+- **Health checks**: Automatic service monitoring and restart capabilities
+- **Volume persistence**: Data preservation across container restarts
+
+## 🔧 Administration
+
+Generate license keys:
+```bash
+python admin_tools.py
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes  
+4. Test your changes
+5. Submit a pull request
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+Special thanks to **Raihan Khan** for creating the original Recall AI project and making it available under the MIT License. This implementation builds upon their foundational work while adding enhanced features and capabilities.
+
+Original concept and base implementation: © 2024 Raihan Khan
+
+## 🆘 Support
+
+- **Issues**: [GitHub Issues](https://github.com/UniquePratham/recall-ai/issues)
+- **Documentation**: Check the code comments and docstrings
+
+---
+
+Made with ❤️ for intelligent memory assistance
