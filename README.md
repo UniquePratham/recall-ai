@@ -1,4 +1,11 @@
-# Recal## ✨ Features
+# Recall AI 🧠
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+
+Recall AI is an intelligent Telegram bot that serves as your external brain, remembering everything for you and providing instant recall when needed. Built with advanced AI and vector search technology.
+
+## ✨ Features
 
 ### 📄 **Advanced Document Processing**
 - **PDF Files**: Extract text from regular and scanned PDFs with OCR support
@@ -42,19 +49,6 @@
 - **Content Categorization**: Smart tagging and organization
 - **Metadata Preservation**: Store file types, sizes, and processing details
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-
-Recall AI is an intelligent Telegram bot that serves as your external brain, remembering everything for you and providing instant recall when needed. Built with advanced AI and vector search technology.
-
-## ✨ Features
-
-- � **Document Processing**: PDF, DOCX files
-- 🖼️ **Image Analysis**: OCR and visual analysis  
-- 🎵 **Audio Transcription**: MP3, WAV, OGG files
-- 📝 **Text Storage**: Direct text and URL content
-- 🔍 **Intelligent Search**: Ask questions about stored content
-
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -83,9 +77,6 @@ cp .env.example .env           # Edit with your credentials
 python create_collections.py  # Initialize database
 python main.py                 # Start the bot
 ```
-   ```bash
-   python main.py
-   ```
 
 ### 🚀 Railway Cloud Deployment (24/7 Operation)
 
