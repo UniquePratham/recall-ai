@@ -1,7 +1,6 @@
 """
 Simple logging configuration for Recall AI
 """
-from io import StringIO
 import os
 import logging
 import sys

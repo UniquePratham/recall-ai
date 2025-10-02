@@ -8,8 +8,7 @@ from processors import (
     process_photo,
     process_audio,
     process_text,
-    process_url,
-    query_knowledge_base
+    process_url
 )
 from utils import search_cache_first, delete_memories_by_terms, clear_all_memories
 from utils import chat_completion
@@ -21,7 +20,8 @@ from cache_manager import cache_manager
 
 logger = setup_logging()
 
-MODE_KEYBOARD_LAYOUT = [["/remember", "/search", "/talk"], ["/forget", "/forgetall", "/help"]]
+MODE_KEYBOARD_LAYOUT = [["/remember", "/search",
+                         "/talk"], ["/forget", "/forgetall", "/help"]]
 
 
 def get_mode_keyboard() -> ReplyKeyboardMarkup:
@@ -171,11 +171,11 @@ async def talk_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     cache_manager.set_user_mode(user_id, "talk")
     context.user_data["mode"] = "talk"
     reset_conversation(context)
-    
+
     # Get recent search context for enhanced chat
     username = update.effective_user.username or str(user_id)
     search_context = cache_manager.get_search_context_for_chat(username)
-    
+
     if search_context:
         context.user_data["search_context"] = search_context
         await update.message.reply_text(
@@ -369,7 +369,8 @@ async def handle_document(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         log_user_action(logger, user.id,
                         user.username or "unknown", "document_processed")
     except Exception as e:
-        log_error(logger, e, {"operation": "handle_document", "user_id": user.id})
+        log_error(
+            logger, e, {"operation": "handle_document", "user_id": user.id})
         await update.message.reply_text("❌ Failed to process document. Please try again.")
 
 
@@ -453,11 +454,11 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     if context.user_data.get('pending_forget'):
         await handle_forget_confirmation(update, context, text)
         return
-    
+
     if context.user_data.get('pending_forget_all'):
         await handle_forget_all_confirmation(update, context, text)
         return
-    
+
     mode = context.user_data.get("mode")
     try:
         if mode == "remember":
@@ -505,43 +506,45 @@ async def handle_forget_confirmation(update: Update, context: ContextTypes.DEFAU
     """Handle confirmation for forget command"""
     user = update.effective_user
     pending = context.user_data.get('pending_forget')
-    
+
     if not pending:
         return
-    
+
     if text.upper().strip() == 'YES':
         try:
             await update.message.reply_text("🗑️ Deleting memories...")
-            
+
             deleted_count, summary = await delete_memories_by_terms(
-                pending['search_terms'], 
-                pending['username'], 
+                pending['search_terms'],
+                pending['username'],
                 preview_only=False
             )
-            
+
             # Clear related cache entries
-            cache_manager.clear_user_search_cache(pending['username'], pending['search_terms'])
-            
+            cache_manager.clear_user_search_cache(
+                pending['username'], pending['search_terms'])
+
             await update.message.reply_text(
                 f"✅ Successfully deleted {deleted_count} memories containing '{pending['search_terms']}'.\n\n"
                 f"{summary}",
                 reply_markup=get_mode_keyboard()
             )
-            
+
             log_user_action(logger, user.id, pending['username'], "memories_deleted", {
-                "terms": pending['search_terms'], 
+                "terms": pending['search_terms'],
                 "count": deleted_count
             })
-            
+
         except Exception as e:
-            log_error(logger, e, {"operation": "handle_forget_confirmation", "user_id": user.id})
+            log_error(
+                logger, e, {"operation": "handle_forget_confirmation", "user_id": user.id})
             await update.message.reply_text("❌ Error deleting memories. Please try again.")
     else:
         await update.message.reply_text(
             "❌ Deletion cancelled. Your memories are safe.",
             reply_markup=get_mode_keyboard()
         )
-    
+
     # Clear pending state
     context.user_data.pop('pending_forget', None)
 
@@ -550,19 +553,19 @@ async def handle_forget_all_confirmation(update: Update, context: ContextTypes.D
     """Handle confirmation for forget-all command"""
     user = update.effective_user
     pending = context.user_data.get('pending_forget_all')
-    
+
     if not pending:
         return
-    
+
     if text.strip() == 'DELETE ALL':
         try:
             await update.message.reply_text("🗑️ Deleting ALL memories and clearing cache...")
-            
+
             deleted_count = await clear_all_memories(pending['username'], preview_only=False)
-            
+
             # Clear all cache for this user
             cache_manager.clear_all_user_cache(pending['username'])
-            
+
             await update.message.reply_text(
                 f"✅ Successfully deleted ALL memories and cache:\n\n"
                 f"• **{deleted_count} memories** deleted from database\n"
@@ -571,13 +574,14 @@ async def handle_forget_all_confirmation(update: Update, context: ContextTypes.D
                 reply_markup=get_mode_keyboard(),
                 parse_mode='Markdown'
             )
-            
+
             log_user_action(logger, user.id, pending['username'], "all_memories_deleted", {
                 "count": deleted_count
             })
-            
+
         except Exception as e:
-            log_error(logger, e, {"operation": "handle_forget_all_confirmation", "user_id": user.id})
+            log_error(
+                logger, e, {"operation": "handle_forget_all_confirmation", "user_id": user.id})
             await update.message.reply_text("❌ Error deleting memories. Please try again.")
     else:
         await update.message.reply_text(
@@ -585,7 +589,7 @@ async def handle_forget_all_confirmation(update: Update, context: ContextTypes.D
             "(Note: You must type 'DELETE ALL' exactly to confirm)",
             reply_markup=get_mode_keyboard()
         )
-    
+
     # Clear pending state
     context.user_data.pop('pending_forget_all', None)
 
@@ -605,16 +609,18 @@ async def handle_ask_internal(update: Update, context: ContextTypes.DEFAULT_TYPE
         await update.message.reply_text("🧠 Searching your memories...")
 
         # Use cache-first search logic with appropriate limit
-        limit = 10 if any(word in query.lower() for word in ['all', 'list', 'every', 'entire', 'complete']) else 8
+        limit = 10 if any(word in query.lower() for word in [
+                          'all', 'list', 'every', 'entire', 'complete']) else 8
         result = await search_cache_first(query, user.username or str(user.id), limit)
-        
+
         # Clean up the result formatting
         cleaned_result = result.strip()
-        
+
         # Remove any remaining ** formatting artifacts
-        cleaned_result = cleaned_result.replace('**Your Question:**', '').replace('**Answer:**', '')
+        cleaned_result = cleaned_result.replace(
+            '**Your Question:**', '').replace('**Answer:**', '')
         cleaned_result = cleaned_result.replace('**', '').strip()
-        
+
         # Format the response properly
         if cleaned_result:
             await update.message.reply_text(f"💡 {cleaned_result}", parse_mode='Markdown')
@@ -659,20 +665,20 @@ async def forget_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         return
 
     search_terms = ' '.join(context.args)
-    
+
     try:
         await update.message.reply_text(f"🔍 Searching for memories containing: '{search_terms}'...")
-        
+
         # Find matching memories
         matching_count, preview = await delete_memories_by_terms(search_terms, username, preview_only=True)
-        
+
         if matching_count == 0:
             await update.message.reply_text(
                 f"No memories found containing '{search_terms}'.",
                 reply_markup=get_mode_keyboard()
             )
             return
-        
+
         # Ask for confirmation
         confirmation_text = (
             f"⚠️ **Found {matching_count} memories to delete:**\n\n"
@@ -680,18 +686,20 @@ async def forget_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
             f"**Are you sure you want to delete these memories?**\n"
             f"Reply 'YES' to confirm or anything else to cancel."
         )
-        
+
         await update.message.reply_text(confirmation_text, parse_mode='Markdown')
         context.user_data['pending_forget'] = {
             'search_terms': search_terms,
             'username': username,
             'count': matching_count
         }
-        
-        log_user_action(logger, user.id, username, "forget_search", {"terms": search_terms, "count": matching_count})
-        
+
+        log_user_action(logger, user.id, username, "forget_search", {
+                        "terms": search_terms, "count": matching_count})
+
     except Exception as e:
-        log_error(logger, e, {"operation": "forget_command", "user_id": user.id})
+        log_error(
+            logger, e, {"operation": "forget_command", "user_id": user.id})
         await update.message.reply_text("❌ Error searching for memories. Please try again.")
 
 
@@ -706,14 +714,14 @@ async def forgetall_command(update: Update, context: ContextTypes.DEFAULT_TYPE) 
     try:
         # Get count of existing memories
         total_count = await clear_all_memories(username, preview_only=True)
-        
+
         if total_count == 0:
             await update.message.reply_text(
                 "No memories found to delete.",
                 reply_markup=get_mode_keyboard()
             )
             return
-        
+
         # Ask for confirmation
         confirmation_text = (
             f"⚠️ **WARNING: This will permanently delete ALL your memories!**\n\n"
@@ -723,15 +731,17 @@ async def forgetall_command(update: Update, context: ContextTypes.DEFAULT_TYPE) 
             f"**Are you absolutely sure?**\n"
             f"Reply 'DELETE ALL' (exactly) to confirm or anything else to cancel."
         )
-        
+
         await update.message.reply_text(confirmation_text, parse_mode='Markdown')
         context.user_data['pending_forget_all'] = {
             'username': username,
             'count': total_count
         }
-        
-        log_user_action(logger, user.id, username, "forget_all_requested", {"count": total_count})
-        
+
+        log_user_action(logger, user.id, username,
+                        "forget_all_requested", {"count": total_count})
+
     except Exception as e:
-        log_error(logger, e, {"operation": "forget_all_command", "user_id": user.id})
+        log_error(
+            logger, e, {"operation": "forget_all_command", "user_id": user.id})
         await update.message.reply_text("❌ Error checking memories. Please try again.")
