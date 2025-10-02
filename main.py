@@ -8,7 +8,6 @@ import time
 from aiohttp import web
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackQueryHandler
-from telegram.error import TelegramError
 
 from handlers import (
     start, help_command, remember_command, search_command, talk_command,
