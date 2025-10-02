@@ -21,7 +21,7 @@ from logging_config import setup_logging
 
 logger = setup_logging()
 
-# Health check endpoint for Railway
+# Health check endpoint for hosting / monitoring
 
 
 async def health_check(request):
@@ -35,7 +35,7 @@ async def health_check(request):
 
 
 async def start_health_server():
-    """Start health check server for Railway monitoring"""
+    """Start health check server for hosting and uptime monitoring"""
     try:
         port = int(os.getenv('PORT', 8000))
         app = web.Application()

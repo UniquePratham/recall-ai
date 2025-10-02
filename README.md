@@ -78,33 +78,50 @@ python create_collections.py  # Initialize database
 python main.py                 # Start the bot
 ```
 
-### 🚀 Railway Cloud Deployment (24/7 Operation)
 
-Deploy to Railway for always-on cloud hosting:
+### � Docker (Build & Run)
+
+Build the image and run locally with Docker:
 
 ```bash
-# 1. Push to GitHub
-git add . && git commit -m "Deploy to Railway" && git push
+# Build the container image
+docker build -t recall-ai:latest .
 
-# 2. Deploy on Railway
-# - Go to railway.app
-# - Connect GitHub repo
-# - Add environment variables
-# - Auto-deploy with Dockerfile
+# Run the container (example with env file)
+docker run --env-file .env -p 8000:8000 --name recall-ai recall-ai:latest
+
+# Or use docker-compose (recommended for MongoDB + Qdrant local development)
+docker-compose up -d --build
 ```
 
-**Railway Environment Variables**:
-```env
-BOT_TOKEN=your_telegram_bot_token
-AI_PROVIDER=Gemini
-GEMINI_API_KEY=your_gemini_api_key
-QDRANT_URL=https://your-cluster.qdrant.tech:6333
-QDRANT_API_KEY=your_qdrant_api_key
-MONGODB_URI=your_mongodb_atlas_uri
-SECRET_KEY=your_secret_key
-```
+Tips:
+- Use `--env-file .env` to pass environment variables from your local `.env` file.
+- For production, set up managed MongoDB (Atlas) and Qdrant Cloud and pass their connection strings as environment variables.
 
-**Cost**: $0-5/month (Railway free tier + Qdrant free tier)
+### ☁️ Hosting on Render (recommended for simple deployments)
+
+Options on Render:
+
+- Background Worker (recommended for polling-based Telegram bots): deploy as a "Worker" service running the start command `python main.py`.
+- Web Service (if you use webhooks or want an HTTP health endpoint): deploy as a "Web Service" and expose an HTTP health endpoint (e.g., `/health`).
+
+Quick steps to deploy to Render (Docker or by connecting the repo):
+
+1. Push your repository to GitHub.
+2. Go to https://render.com and create a new service.
+3. Connect your GitHub repo and choose the repository.
+4. Select the service type:
+	- "Private Service" → "Worker" for long-running background bot (use `python main.py`), or
+	- "Web Service" if you need an HTTP endpoint (use `python main.py` and implement a `/health` endpoint).
+5. If you use the existing `Dockerfile`, choose the Docker option so Render builds your image exactly as local.
+6. Add environment variables in the Render dashboard (mark secrets): `BOT_TOKEN`, `MONGODB_URI`, `QDRANT_URL`, `QDRANT_API_KEY`, `AI_PROVIDER`, etc.
+7. Deploy and monitor logs. Restart the service if needed.
+
+Notes & recommendations:
+- Use Render's managed Postgres/Redis only if you need them; prefer MongoDB Atlas and Qdrant Cloud for persistence.
+- Set instance size according to usage; single small instance is usually fine for personal bots.
+- Add a simple `/health` endpoint so Render can monitor service health and restart on failure.
+- For file persistence (LRU cache), prefer storing cache in MongoDB rather than the filesystem on Render (ephemeral storage).
 
 ### Docker Deployment (Local)
 
@@ -206,7 +223,7 @@ recall-ai/
 ├── requirements.txt     # Python dependencies
 ├── Dockerfile          # Production container definition
 ├── docker-compose.yml  # Multi-service development setup
-├── railway.json        # Railway deployment configuration
+└── .env.example        # Environment template with all options
 └── .env.example        # Environment template with all options
 ```
 

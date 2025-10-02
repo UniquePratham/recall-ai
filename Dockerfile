@@ -36,11 +36,11 @@ RUN useradd --create-home --shell /bin/bash app && \
     chown -R app:app /app
 USER app
 
-# Health check for Railway
+# Health check for container monitoring
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:$PORT/health || exit 1
 
-# Expose port for Railway
+# Expose port for hosting
 EXPOSE $PORT
 
 # Command to run the application
