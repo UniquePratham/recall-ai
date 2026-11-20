@@ -205,3 +205,6 @@ local_settings.py
 #cache files
 search_cache.txt
 user_modes.txt
+
+# Added by repo hygiene pass
+node_modules/
