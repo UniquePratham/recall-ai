@@ -208,3 +208,6 @@ user_modes.txt
 
 # Added by repo hygiene pass
 node_modules/
+
+# Vercel local state (contains project tokens)
+.vercel/
