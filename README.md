@@ -269,3 +269,15 @@ Original concept and base implementation: © 2024 Raihan Khan
 ---
 
 Made with ❤️ for intelligent memory assistance
+
+## Running
+
+**Telegram bot**
+
+```bash
+pip install -r requirements.txt
+cp .env.example .env  # fill in your keys
+python main.py
+```
+
+Needs a Telegram bot token and a vector store; see `.env.example`.
